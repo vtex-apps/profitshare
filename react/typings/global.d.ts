@@ -1,3 +1,8 @@
 interface Window extends Window {
-  dataLayer: any[]
+  __profitshare: {
+    cookieScript: string
+    clickCode: string
+    advertiserCode: string
+    key: string
+  }
 }

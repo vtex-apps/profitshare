@@ -1,9 +1,9 @@
 {
-  "name": "YOUR APP NAME",
+  "name": "profitshare",
   "vendor": "vtex",
-  "version": "0.0.1",
-  "title": "CHANGEME",
-  "description": "CHANGEME",
+  "version": "0.1.0",
+  "title": "profitshare",
+  "description": "profitshare",
   "billingOptions": {
     "termsURL": "",
     "support": {
@@ -21,12 +21,27 @@
     "vtex.pixel-interfaces": "1.x"
   },
   "settingsSchema": {
-    "title": "YOUR APP NAME",
+    "title": "profitshare",
     "type": "object",
     "properties": {
-      "gtmId": {
-        "title": "SAMPLE FIELD",
-        "description": "Enter the ID (GTM-XXXX) from your Google Tag Manager",
+      "cookieScript": {
+        "title": "Cookie conversions script",
+        "description": "Enter cookie conversions script",
+        "type": "string"
+      },
+      "clickCode": {
+        "title": "Click code set by cookie script",
+        "description": "Enter click code set by cookie script",
+        "type": "string"
+      },
+      "advertiserCode": {
+        "title": "Advertiser tracking code",
+        "description": "Enter advertiser tracking code",
+        "type": "string"
+      },
+      "key": {
+        "title": "Encryption key",
+        "description": "Enter encryption key",
         "type": "string"
       }
     }

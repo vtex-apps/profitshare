@@ -999,6 +999,11 @@
   dependencies:
     graphql "*"
 
+"@types/http-build-query@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@types/http-build-query/-/http-build-query-0.7.0.tgz#d1a67c6dcdc4d1562a9f48927d11ae9a281e1325"
+  integrity sha512-gNwFNThGVvARJPq4JqLBQ5+XZM0bbWjD7AacBGBlTDYBUSw6q7pOMXGMDsH831M7qG0TEp76kUAFBolzK2+e1w==
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
@@ -5124,10 +5129,10 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-typescript@3.5.2:
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.2.tgz#a09e1dc69bc9551cadf17dba10ee42cf55e5d56c"
-  integrity sha512-7KxJovlYhTX5RaRbUdkAXN1KUZ8PwWlTzQdHV6xNqvuFOs7+WBo10TQUqT19Q/Jz2hk5v9TQDIhyLhhJY4p5AA==
+typescript@3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.3.tgz#b36840668a16458a7025b9eabfad11b66ab85c69"
+  integrity sha512-Mcr/Qk7hXqFBXMN7p7Lusj1ktCBydylfQM/FZCk5glCNQJrCUKPkMHdo9R0MTFWsC/4kPFvDS0fDPvukfCkFsw==
 
 typescript@^3.3.3333:
   version "3.6.2"
