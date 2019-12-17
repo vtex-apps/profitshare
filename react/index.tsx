@@ -50,16 +50,6 @@ function createIFrame(params: iframeParams) {
 }
 
 function bin2hex (s: string) {
-  //  discuss at: https://locutus.io/php/bin2hex/
-  // original by: Kevin van Zonneveld (https://kvz.io)
-  // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
-  // bugfixed by: Linuxworld
-  // improved by: ntoniazzi (https://locutus.io/php/bin2hex:361#comment_177616)
-  //   example 1: bin2hex('Kev')
-  //   returns 1: '4b6576'
-  //   example 2: bin2hex(String.fromCharCode(0x00))
-  //   returns 2: '00'
-
   var i
   var l
   var o = ''
