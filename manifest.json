@@ -24,9 +24,9 @@
     "title": "profitshare",
     "type": "object",
     "properties": {
-      "cookieScript": {
-        "title": "Cookie conversions script",
-        "description": "Enter cookie conversions script",
+      "cookieScriptURL": {
+        "title": "Cookie conversions script URL",
+        "description": "Enter cookie conversions script URL",
         "type": "string"
       },
       "clickCode": {

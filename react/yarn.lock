@@ -999,11 +999,6 @@
   dependencies:
     graphql "*"
 
-"@types/http-build-query@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@types/http-build-query/-/http-build-query-0.7.0.tgz#d1a67c6dcdc4d1562a9f48927d11ae9a281e1325"
-  integrity sha512-gNwFNThGVvARJPq4JqLBQ5+XZM0bbWjD7AacBGBlTDYBUSw6q7pOMXGMDsH831M7qG0TEp76kUAFBolzK2+e1w==
-
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
