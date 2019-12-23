@@ -1,6 +1,6 @@
 interface Window extends Window {
   __profitshare: {
-    cookieScriptURL: string
+    cookieScriptName: string
     clickCode: string
     advertiserCode: string
     key: string

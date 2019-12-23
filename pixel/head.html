@@ -1,17 +1,20 @@
+<script async type="text/javascript" src="https://t.profitshare.ro/files_shared/tr/{{settings.cookieScriptName}}.js"></script>
 <script>
-    (function(window) {
-    var profitshare = "{{settings.cookieScriptURL}}";
-    if (profitshare) {
-      window.__profitshare = {
-        clickCode: "{{ settings.clickCode }}",
-        advertiserCode: "{{ settings.advertiserCode }}",
-        key: "{{ settings.key }}"
-      }
-    } else {
-      console.error(
-        "Warning: No Profitshare script is defined. Please configure it in the apps admin."
-      );
+(function() {
+    var clickCode = "{{ settings.clickCode }}";
+    var advertiserCode = "{{ settings.advertiserCode }}";
+    var key = "{{ settings.key }}";
+    var cookieScriptName = "{{settings.cookieScriptName}}";
+    
+    if (!clickCode || !advertiserCode || !key || !cookieScriptName ) {
+      console.error('Warning: Missing required field for Profitshare. Please configure it in the apps admin.');
+      return
     }
-  })(window);
+
+    window.__profitshare = {
+      clickCode: clickCode,
+      advertiserCode: advertiserCode,
+      key: key,
+    };
+  })()
 </script>
-<script type="text/javascript" src="{{settings.cookieScriptURL}}" async="true"></script>
