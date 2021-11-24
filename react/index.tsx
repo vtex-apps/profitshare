@@ -1,6 +1,6 @@
 import { canUseDOM } from 'vtex.render-runtime'
 import { PixelMessage, ProductOrder } from './typings/events'
-import crypto from 'crypto'
+
 
 function buildQuery(data: any) {
 
@@ -66,20 +66,36 @@ function bin2hex (s: string) {
   return o
 }
 
+function ab2str(buf: ArrayBuffer) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+
 const AES_METHOD = 'aes-128-cbc';
 const IV_LENGTH = 16;
 declare const Buffer: any;
 
-function encrypt(text: string, key: string) {
-  let iv = crypto.randomBytes(IV_LENGTH);
-  let cipher = crypto.createCipheriv(AES_METHOD, new Buffer(key), iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  const hash = crypto.createHmac('sha256', key)
-              .update(encrypted)
-              .digest('base64');
 
-  return bin2hex(hash);
+const encode = (data: any) => {
+  const encoder = new TextEncoder()
+
+  return encoder.encode(data)
+}
+
+const generateIv = () => {
+  return window.crypto.getRandomValues(new Uint8Array(IV_LENGTH))
+}
+
+async function encrypt(text: string, password: string) {
+  const encoded = encode(text)
+  const iv = generateIv()
+  const pwUtf8 = new TextEncoder().encode(password)
+  const pwHash = await window.crypto.subtle.digest('SHA-256', pwUtf8) 
+  const alg = { name: AES_METHOD, iv: iv }
+  const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['encrypt'])
+
+  const ctBuffer = await window.crypto.subtle.encrypt(alg, key, encoded)    
+  const signature = await window.crypto.subtle.sign("HMAC", key, ctBuffer)
+  return bin2hex(ab2str(signature))
 }
 
 
@@ -89,7 +105,7 @@ interface Params {
   orderProducts: ProductOrder[]
 }
 
-function encryptParams(params: Params) {
+async function encryptParams(params: Params) {
 
   const products = [{
     external_reference: params.orderId,
@@ -106,13 +122,13 @@ function encryptParams(params: Params) {
   }];
 
   const querystring = buildQuery(products);
-  return encrypt(querystring, params.key);
+  return await encrypt(querystring, params.key);
 }
 
-export function handleEvents(e: PixelMessage) {
+export async function handleEvents(e: PixelMessage) {
   switch (e.data.eventName) {
     case 'vtex:orderPlaced': {
-      const encryptedParams = encryptParams({
+      const encryptedParams = await encryptParams({
         key: window.__profitshare.key, 
         orderId: e.data.transactionId,
         orderProducts: e.data.transactionProducts
