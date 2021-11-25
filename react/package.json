@@ -18,5 +18,6 @@
     "prettier": "^1.18.2",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "3.9.7"
-  }
+  },
+  "version": "0.2.0"
 }
