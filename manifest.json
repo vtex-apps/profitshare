@@ -43,6 +43,16 @@
         "title": "Encryption key",
         "description": "Enter encryption key",
         "type": "string"
+      },
+      "cookieScriptDomain": {
+        "title": "Cookie script domain",
+        "description": "Enter cookie script domain",
+        "type": "string"
+      },
+      "iframeDomain": {
+        "title": "IFrame domain",
+        "description": "Enter IFrame domain",
+        "type": "string"
       }
     }
   },

@@ -1,20 +1,39 @@
-<script async type="text/javascript" src="https://t.profitshare.ro/files_shared/tr/{{settings.cookieScriptName}}.js"></script>
+<script>
+  (function() {
+    var domain = "{{ settings.cookieScriptDomain }}" || "t.profitshare.ro";
+    var src = `https://${domain}/files_shared/tr/{{settings.cookieScriptName}}.js`
+    var s;
+        s = document.createElement('script');
+        s.type="text/javascript";
+        s.src = src;
+        document.head.appendChild(s);
+  })();
+</script>
+
 <script>
 (function() {
     var clickCode = "{{ settings.clickCode }}";
     var advertiserCode = "{{ settings.advertiserCode }}";
     var key = "{{ settings.key }}";
     var cookieScriptName = "{{settings.cookieScriptName}}";
+    var cookieScriptDomain = "{{settings.cookieScriptDomain}}";
+    var iframeDomain = "{{settings.iframeDomain}}";
     
-    if (!clickCode || !advertiserCode || !key || !cookieScriptName ) {
+    if (!clickCode || !advertiserCode || !key || !cookieScriptName) {
       console.error('Warning: Missing required field for Profitshare. Please configure it in the apps admin.');
       return
+    }
+    if (!cookieScriptDomain || !iframeDomain) {
+      console.warn('Warning: Missing cookieScriptDomain or iframeDomain. Default values for Romania will be applied.');
     }
 
     window.__profitshare = {
       clickCode: clickCode,
       advertiserCode: advertiserCode,
       key: key,
+      cookieScriptDomain: cookieScriptDomain,
+      iframeDomain: iframeDomain,
+      _ps_tg: {}
     };
   })()
 </script>
