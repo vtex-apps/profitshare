@@ -19,9 +19,12 @@
     var cookieScriptDomain = "{{settings.cookieScriptDomain}}";
     var iframeDomain = "{{settings.iframeDomain}}";
     
-    if (!clickCode || !advertiserCode || !key || !cookieScriptName || !cookieScriptDomain || !iframeDomain ) {
+    if (!clickCode || !advertiserCode || !key || !cookieScriptName) {
       console.error('Warning: Missing required field for Profitshare. Please configure it in the apps admin.');
       return
+    }
+    if (!cookieScriptDomain || !iframeDomain) {
+      console.error('Warning: Missing cookieScriptDomain or iframeDomain. Default values for Romania will be applied.');
     }
 
     window.__profitshare = {

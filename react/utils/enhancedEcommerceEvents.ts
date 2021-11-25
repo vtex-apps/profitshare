@@ -5,7 +5,6 @@ interface iframeParams {
   advertiserCode: string
   clickCode: string
   encryptedParams: string
-  iframeDomain: string
 }
 
 function getCookie(name: string) {
@@ -68,8 +67,7 @@ export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
             createIFrame({
               advertiserCode: window.__profitshare.advertiserCode,
               clickCode: window.__profitshare.clickCode,
-              encryptedParams,
-              iframeDomain: window.__profitshare.iframeDomain
+              encryptedParams
             })
         }
       case 'vtex:productView':
