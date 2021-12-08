@@ -57,7 +57,9 @@ function sendProductTrackingInfo(e: PixelMessage) {
       }
       return _ps_tgt_
     }
-    s.src = "https://profitshare.bg/tgt/js";
+
+    let cookieScriptDomain = window.__profitshare.cookieScriptDomain || "t.profitshare.ro";
+    s.src = `https://${cookieScriptDomain}/tgt/js`;
     document.head.appendChild(s);
 }
 

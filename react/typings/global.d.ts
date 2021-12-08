@@ -4,7 +4,8 @@ interface Window extends Window {
     clickCode: string
     advertiserCode: string
     key: string
-    iframeDomain: string,
+    iframeDomain: string
+    cookieScriptDomain: string
     _ps_tgt: TrackingObject
   }
 }
