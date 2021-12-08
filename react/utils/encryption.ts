@@ -7,22 +7,6 @@ interface Params {
     orderProducts: ProductOrder[]
 }
 
-const AES_METHOD = 'aes-128-cbc';
-const IV_LENGTH = 16;
-declare const Buffer: any;
-
-
-const encode = (data: any) => {
-  const encoder = new TextEncoder()
-
-  return encoder.encode(data)
-}
-
-const generateIv = () => {
-  return window.crypto.getRandomValues(new Uint8Array(IV_LENGTH))
-}
-
-
 function bin2hex (s: string) {
     var i
     var l
@@ -45,7 +29,6 @@ function ab2str(buf: ArrayBuffer) {
 }
 
 function buildQuery(data: any) {
-
   // If the data is already a string, return it as-is
   if (typeof (data) === 'string') return data;
 
@@ -66,21 +49,18 @@ function buildQuery(data: any) {
 };
 
 async function encrypt(text: string, password: string) {
-    const encoded = encode(text)
-    const iv = generateIv()
+    const encoded = new TextEncoder().encode(text)
     const pwUtf8 = new TextEncoder().encode(password)
     const pwHash = await window.crypto.subtle.digest('SHA-256', pwUtf8) 
-    const alg = { name: AES_METHOD, iv: iv }
-    const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['encrypt'])
-  
-    const ctBuffer = await window.crypto.subtle.encrypt(alg, key, encoded)    
-    const signature = await window.crypto.subtle.sign("HMAC", key, ctBuffer)
+    const alg = { name: 'HMAC', hash: "SHA-256"}
+    const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['sign'])
+    const signature = await window.crypto.subtle.sign({ name: "HMAC" }, key, encoded)
+
     return bin2hex(ab2str(signature))
   }
 
 
 export async function encryptParams(params: Params) {
-
     const products = [{
       external_reference: params.orderId,
       product_code: params.orderProducts.map((product: ProductOrder) => product.id),

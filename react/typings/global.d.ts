@@ -5,7 +5,7 @@ interface Window extends Window {
     advertiserCode: string
     key: string
     iframeDomain: string,
-    _ps_tg: TrackingObject
+    _ps_tgt: TrackingObject
   }
 }
 
