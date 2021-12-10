@@ -1,10 +1,11 @@
-import { PixelMessage, ProductViewData, SearchPageInfoData} from "../typings/events";
+import { OrderPlacedTrackedData, PixelMessage, ProductViewData, SearchPageInfoData} from "../typings/events";
 import {encryptParams} from "./encryption"
 
 interface iframeParams {
   advertiserCode: string
   clickCode: string
   encryptedParams: string
+  iframedomain: string
 }
 
 function getCookie(name: string) {
@@ -20,9 +21,8 @@ function createIFrame(params: iframeParams) {
     iframe.scrolling = 'no'
     iframe.marginHeight = '0'
     iframe.marginWidth = '0'
-    let iframedomain = "{{ settings.iframeDomain }}" || "c.profitshare.ro";
+    let iframedomain = params.iframedomain  || "c.profitshare.ro";
     iframe.src = `https://${iframedomain}/ca/0/${params.advertiserCode}/p/${params.encryptedParams}?click_code=${clickCookie}`
-
     document.body.appendChild(iframe)
 }
 
@@ -45,30 +45,43 @@ function sendProductTrackingInfo(e: PixelMessage) {
       price_window = seller ? seller.commertialOffer?.Price : price_window
     }
 
-    let _ps_tg_tracking = {
-      advertiser_code :window.__profitshare.advertiserCode,
-      product_code :productId_window,
-      product_price :price_window,
-      brand_code :brandId_window,
-      category_code : categoryId_window,
+    var s =document.createElement("script"); 
+    s.type = "text/javascript";
+    s.onload = function () {
+      var _ps_tgt_ = {
+        a: window.__profitshare.advertiserCode,
+        pc: productId_window,
+        pp: price_window,
+        cc: categoryId_window,
+        bc: brandId_window
+      }
+      return _ps_tgt_
     }
 
-    window.__profitshare._ps_tg = _ps_tg_tracking
+    let cookieScriptDomain = window.__profitshare.cookieScriptDomain || "t.profitshare.ro";
+    s.src = `https://${cookieScriptDomain}/tgt/js`;
+    document.head.appendChild(s);
+}
+
+async function sendConversionCode(e: PixelMessage){
+  const eventData = e.data as OrderPlacedTrackedData
+  const encryptedParams = await encryptParams({
+    key: window.__profitshare.key,
+    orderId: eventData.transactionId,
+    orderProducts: eventData.transactionProducts
+  })
+  createIFrame({
+    advertiserCode: window.__profitshare.advertiserCode,
+    clickCode: window.__profitshare.clickCode,
+    encryptedParams,
+    iframedomain: window.__profitshare.iframeDomain
+  })
 }
 
 export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
     switch (e.data.eventName) {
-        case 'vtex:orderPlaced': {
-            const encryptedParams = await encryptParams({
-              key: window.__profitshare.key,
-              orderId: e.data.transactionId,
-              orderProducts: e.data.transactionProducts
-            })
-            createIFrame({
-              advertiserCode: window.__profitshare.advertiserCode,
-              clickCode: window.__profitshare.clickCode,
-              encryptedParams
-            })
+        case 'vtex:orderPlacedTracked': {
+          sendConversionCode(e)
         }
       case 'vtex:productView':
       {
