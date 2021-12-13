@@ -55,8 +55,10 @@ async function encrypt(text: string, password: string) {
     const alg = { name: 'HMAC', hash: "SHA-256"}
     const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['sign'])
     const signature = await window.crypto.subtle.sign({ name: "HMAC" }, key, encoded)
-
-    return bin2hex(ab2str(signature))
+    console.log("Encryption finalized")
+    let res = bin2hex(ab2str(signature))
+    console.log("Encryption res: ", res)
+    return res
   }
 
 
@@ -76,6 +78,7 @@ export async function encryptParams(params: Params) {
     }];
   
     const querystring = buildQuery(products);
+    console.log("Encryption querystring: ", querystring)
     return await encrypt(querystring, params.key);
   }
 

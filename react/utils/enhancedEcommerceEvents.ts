@@ -79,18 +79,22 @@ async function sendConversionCode(e: PixelMessage){
 }
 
 export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
+  console.log(e.data.eventName)
     switch (e.data.eventName) {
         case 'vtex:orderPlacedTracked': {
+          console.log("Order placed")
           sendConversionCode(e)
         }
       case 'vtex:productView':
       {
+        console.log("Product View")
         sendProductTrackingInfo(e);
       }
       case 'vtex:pageInfo': {
         const eventData = e.data as SearchPageInfoData
         const { eventType } = eventData
         if(eventType === 'categoryView'){
+          console.log("Catgeory View")
           sendProductTrackingInfo(e);
         }
       }
