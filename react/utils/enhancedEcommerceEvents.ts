@@ -79,7 +79,7 @@ async function sendConversionCode(e: PixelMessage){
 }
 
 export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
-  console.log(e.data.eventName)
+  console.log('Event name: ', e.data.eventName);
     switch (e.data.eventName) {
         case 'vtex:orderPlacedTracked': {
           console.log("Order placed")
