@@ -37,3 +37,24 @@
     };
   })()
 </script>
+
+<script>
+  (function() {
+    let item = JSON.parse( window.localStorage.getItem('ps_tgt'));
+      var ps_tgt_ = {
+      a:  item.a,
+      pc: item.pc,
+      pp: item.pp,
+      cc: item.cc,
+      bc: item.bc
+    }
+  
+    let cookieScriptDomain = "{{ settings.cookieScriptDomain }}"|| "t.profitshare.ro";
+    var s;
+        s = document.createElement('script');
+        s.type="text/javascript";
+        s.async = true;
+        s.src = `https://${cookieScriptDomain}/tgt/js`;
+    document.head.appendChild(s);
+  })();
+</script>

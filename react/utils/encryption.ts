@@ -1,31 +1,11 @@
 import { ProductOrder } from "../typings/events";
-
+import axios from 'axios';
+// import crypto from 'crypto'
 
 interface Params {
     key: string
     orderId: string
     orderProducts: ProductOrder[]
-}
-
-function bin2hex (s: string) {
-    var i
-    var l
-    var o = ''
-    var n
-  
-    s += ''
-  
-    for (i = 0, l = s.length; i < l; i++) {
-      n = s.charCodeAt(i)
-        .toString(16)
-      o += n.length < 2 ? '0' + n : n
-    }
-  
-    return o
-}
-  
-function ab2str(buf: ArrayBuffer) {
-    return String.fromCharCode.apply(null, new Uint16Array(buf));
 }
 
 function buildQuery(data: any) {
@@ -48,16 +28,19 @@ function buildQuery(data: any) {
   return query.join('&');
 };
 
+const BASE_URL = "/_v/encryption"
 async function encrypt(text: string, password: string) {
-    const encoded = new TextEncoder().encode(text)
-    const pwUtf8 = new TextEncoder().encode(password)
-    const pwHash = await window.crypto.subtle.digest('SHA-256', pwUtf8) 
-    const alg = { name: 'HMAC', hash: "SHA-256"}
-    const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['sign'])
-    const signature = await window.crypto.subtle.sign({ name: "HMAC" }, key, encoded)
-    let res = bin2hex(ab2str(signature))
-    return res
+  let result  =''
+  try{
+    result = await axios.get(`${BASE_URL}?plaintext=${text}&key=${password}`);
   }
+  catch(errors){
+    console.error(errors);
+  }
+  let encryption = JSON.parse(JSON.stringify(result)).data.result;
+
+  return encryption;
+}
 
 
 export async function encryptParams(params: Params) {
@@ -74,9 +57,10 @@ export async function encryptParams(params: Params) {
       product_brand: params.orderProducts.map((product: ProductOrder) => product.brand),
       product_qty: params.orderProducts.map((product: ProductOrder) => product.quantity),
     }];
-  
+
     const querystring = buildQuery(products);
-    console.log("Encryption querystring: ", querystring)
-    return await encrypt(querystring, params.key);
+    let res = await encrypt(querystring, params.key);
+
+    return res;
   }
 

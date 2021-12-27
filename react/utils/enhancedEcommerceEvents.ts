@@ -1,4 +1,4 @@
-import { OrderPlacedTrackedData, PixelMessage, ProductViewData, SearchPageInfoData} from "../typings/events";
+import { OrderPlacedData, PixelMessage, ProductViewData, SearchPageInfoData} from "../typings/events";
 import {encryptParams} from "./encryption"
 
 interface iframeParams {
@@ -44,27 +44,18 @@ function sendProductTrackingInfo(e: PixelMessage) {
       let seller = items[0].sellers.filter(item => item.sellerId == '1').find(item=> item!==undefined)
       price_window = seller ? seller.commertialOffer?.Price : price_window
     }
-
-    var s =document.createElement("script"); 
-    s.type = "text/javascript";
-    s.onload = function () {
-      var _ps_tgt_ = {
-        a: window.__profitshare.advertiserCode,
-        pc: productId_window,
-        pp: price_window,
-        cc: categoryId_window,
-        bc: brandId_window
-      }
-      return _ps_tgt_
+    var ps_tgt_ = {
+      a: window.__profitshare.advertiserCode,
+      pc: productId_window,
+      pp: price_window,
+      cc: categoryId_window,
+      bc: brandId_window
     }
-
-    let cookieScriptDomain = window.__profitshare.cookieScriptDomain || "t.profitshare.ro";
-    s.src = `https://${cookieScriptDomain}/tgt/js`;
-    document.head.appendChild(s);
+    window.localStorage.setItem('ps_tgt', JSON.stringify(ps_tgt_));
 }
 
 async function sendConversionCode(e: PixelMessage){
-  const eventData = e.data as OrderPlacedTrackedData
+  const eventData = e.data as OrderPlacedData
   const encryptedParams = await encryptParams({
     key: window.__profitshare.key,
     orderId: eventData.transactionId,
@@ -79,23 +70,26 @@ async function sendConversionCode(e: PixelMessage){
 }
 
 export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
-  console.log('Event name: ', e.data.eventName);
+  console.log(e.data.eventName)
     switch (e.data.eventName) {
-        case 'vtex:orderPlacedTracked': {
-          console.log("Order placed")
-          sendConversionCode(e)
-        }
+      case 'vtex:orderPlacedTracked':
+      case 'vtex:orderPlaced':
+      {
+        sendConversionCode(e)
+        break;
+      }
       case 'vtex:productView':
       {
-        console.log("Product View")
+        console.log('Product view');
         sendProductTrackingInfo(e);
+        break;
       }
       case 'vtex:pageInfo': {
         const eventData = e.data as SearchPageInfoData
         const { eventType } = eventData
         if(eventType === 'categoryView'){
-          console.log("Catgeory View")
           sendProductTrackingInfo(e);
+          break;
         }
       }
       default: {

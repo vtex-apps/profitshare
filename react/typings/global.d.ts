@@ -11,9 +11,9 @@ interface Window extends Window {
 }
 
 interface TrackingObject {
-  advertiser_code: string
-  product_code: string
-  product_price: number
-  category_code: string
-  brand_code: string
+  a: string
+  pc: string
+  pp: number
+  cc: string
+  bc: string
 }

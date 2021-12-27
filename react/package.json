@@ -3,8 +3,12 @@
     "test": "vtex-test-tools test"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "browser-crypto": "^1.4.0",
     "ramda": "^0.26.1"
+  },
+  "browser": {
+    "crypto": false
   },
   "devDependencies": {
     "@types/graphql": "^14.5.0",
