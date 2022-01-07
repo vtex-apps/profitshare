@@ -44,14 +44,14 @@ function sendProductTrackingInfo(e: PixelMessage) {
       let seller = items[0].sellers.filter(item => item.sellerId == '1').find(item=> item!==undefined)
       price_window = seller ? seller.commertialOffer?.Price : price_window
     }
-    var ps_tgt_ = {
+    var _ps_tgt_ = {
       a: window.__profitshare.advertiserCode,
       pc: productId_window,
       pp: price_window,
       cc: categoryId_window,
       bc: brandId_window
     }
-    window.localStorage.setItem('ps_tgt', JSON.stringify(ps_tgt_));
+    window.localStorage.setItem('_ps_tgt', JSON.stringify(_ps_tgt_));
 }
 
 async function sendConversionCode(e: PixelMessage){
@@ -80,7 +80,6 @@ export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
       }
       case 'vtex:productView':
       {
-        console.log('Product view');
         sendProductTrackingInfo(e);
         break;
       }
