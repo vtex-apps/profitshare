@@ -47,7 +47,7 @@ async function encrypt(text: string, password: string) {
     return res;
 }
 
-async function getData(){
+async function getIpData(){
   const res = await axios.get('https://api.ipify.org/?format=json');
   return res.data.ip;
 }
@@ -57,7 +57,7 @@ export async function encryptParams(params: Params) {
     var productsList:any ={};
     productsList['external_reference'] = params.orderId;
     productsList['user_agent'] = navigator.userAgent;
-    productsList['user_ip'] =  await getData();
+    productsList['user_ip'] =  await getIpData();
 
     for(let i=0; i<params.orderProducts.length; i++){
       productsList['product_code['+i.toString()+']'] = params.orderProducts[i].id;
