@@ -1,31 +1,12 @@
+import axios from "axios";
 import { ProductOrder } from "../typings/events";
-// var atob = require('atob');
-// var btoa = require('btoa');
+
 var CryptoJS = require('crypto-js')
 interface Params {
     key: string
     orderId: string
     orderProducts: ProductOrder[]
 }
-
-// function buildQuery(data: any) {
-//   // If the data is already a string, return it as-is
-//   if (typeof (data) === 'string') return data;
-
-//   // Create a query array to hold the key/value pairs
-//   var query = [];
-
-//   // Loop through the data object
-//   for (var key in data) {
-//     if (data.hasOwnProperty(key)) {
-//       // Encode each key and value, concatenate them into a string, and push them to the array
-//       query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-//     }
-//   }
-
-//   // Join each item in the array with a `&` and return the resulting string
-//   return query.join('&');
-// };
 
 function profitshareBin2hex(s: any){  
   var i, f = 0, a = [];  
@@ -38,9 +19,7 @@ function profitshareBin2hex(s: any){
     
   return a.join('');  
 }  
-// const atob = function(str:any){ return Buffer.from(str, 'base64').toString('binary'); }
-//encode
-// const btoa = function(str:any){ return Buffer.from(str, 'binary').toString('base64'); };
+
 function getEncryption(plaintext: any, key: any): string {
   let iv = CryptoJS.enc.Utf8.parse(Math.round((Math.pow(36, 16 + 1) - Math.random() * Math.pow(36, 16))).toString(36).slice(1));
 
@@ -59,36 +38,45 @@ function getEncryption(plaintext: any, key: any): string {
   let chiperRaw = atob(chiperData.toString());
 
   let data = profitshareBin2hex(btoa(iv + hmac + chiperRaw)); 
-  console.log('Data: ', data);
   
   return data
 }
 
 async function encrypt(text: string, password: string) {
-    // const encodedPlainText = encodeURIComponent(text).toString()
     let res = getEncryption(text, password);
     return res;
 }
 
-export async function encryptParams(params: Params) {
-    const products = {
-      external_reference: params.orderId,
-      product_code: params.orderProducts.map((product: ProductOrder) => product.id).toString(),
-      product_part_no: params.orderProducts.map((product: ProductOrder) => product.sku).toString(),
-      product_price: params.orderProducts.map((product: ProductOrder) => product.price).toString(),
-      product_name: params.orderProducts.map((product: ProductOrder) => product.name).toString(),
-      product_link: params.orderProducts.map((product: ProductOrder) => window.location.origin + product.slug + '/p').toString(),
-      product_category: params.orderProducts.map((product: ProductOrder) => product.categoryId).toString(),
-      product_category_name: params.orderProducts.map((product: ProductOrder) => product.category).toString(),
-      product_brand_code: params.orderProducts.map((product: ProductOrder) => product.brandId).toString(),
-      product_brand: params.orderProducts.map((product: ProductOrder) => product.brand).toString(),
-      product_qty: params.orderProducts.map((product: ProductOrder) => product.quantity).toString(),
-    };
+async function getData(){
+  const res = await axios.get('https://api.ipify.org/?format=json');
+  return res.data.ip;
+}
 
-    const querystring =  new URLSearchParams(products);
-    console.log(querystring);
+
+export async function encryptParams(params: Params) {
+    var productsList:any ={};
+    productsList['external_reference'] = params.orderId;
+    productsList['user_agent'] = navigator.userAgent;
+    productsList['user_ip'] =  await getData();
+
+    for(let i=0; i<params.orderProducts.length; i++){
+      productsList['product_code['+i.toString()+']'] = params.orderProducts[i].id;
+      productsList['product_part_no['+i.toString()+']'] = params.orderProducts[i].sku;
+      productsList['product_price['+i.toString()+']'] = params.orderProducts[i].price;
+      productsList['product_name['+i.toString()+']'] = params.orderProducts[i].name;
+      productsList['product_link['+i.toString()+']'] = window.location.origin + params.orderProducts[i].slug + '/p'
+      productsList['product_category['+i.toString()+']'] = params.orderProducts[i].categoryId;
+      productsList['product_category_name['+i.toString()+']'] = params.orderProducts[i].category;
+      productsList['product_brand_code['+i.toString()+']'] = params.orderProducts[i].brandId;
+      productsList['product_brand['+i.toString()+']'] = params.orderProducts[i].brand;
+      productsList['product_qty['+i.toString()+']'] = params.orderProducts[i].quantity;
+    }
+
+    const querystring =  new URLSearchParams(productsList);
     let res = await encrypt(querystring.toString(), params.key);
 
     return res;
   }
+
+
 
