@@ -195,7 +195,6 @@ export interface ProductOrder {
   components: any[]
   measurementUnit: string
   unitMultiplier: number
-  taxCode: string
 }
 
 export interface PriceTag {

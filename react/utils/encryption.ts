@@ -6,6 +6,7 @@ interface Params {
     key: string
     orderId: string
     orderProducts: ProductOrder[]
+    taxCode: number
 }
 
 function profitshareBin2hex(s: any){  
@@ -68,8 +69,7 @@ export async function encryptParams(params: Params) {
       productsList['product_brand_code['+i.toString()+']'] = params.orderProducts[i].brandId;
       productsList['product_brand['+i.toString()+']'] = params.orderProducts[i].brand;
       productsList['product_qty['+i.toString()+']'] = params.orderProducts[i].quantity;
-      
-      if(window.__profitshare.taxCode){
+      if(window.__profitshare?.taxCode){
         let taxCode = window.__profitshare?.taxCode
         let withoutVAT = Math.ceil((params.orderProducts[i].sellingPrice * (1-taxCode/100))*100)/100
         params.orderProducts[i].sellingPrice = withoutVAT;

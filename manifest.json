@@ -53,6 +53,11 @@
         "title": "IFrame domain",
         "description": "Enter IFrame domain",
         "type": "string"
+      },
+      "taxCode": {
+        "title": "VAT percent",
+        "description": "Enter VAT",
+        "type": "number"
       }
     }
   },

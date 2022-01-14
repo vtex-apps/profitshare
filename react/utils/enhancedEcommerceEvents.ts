@@ -59,7 +59,8 @@ async function sendConversionCode(e: PixelMessage){
   const encryptedParams = await encryptParams({
     key: window.__profitshare?.key,
     orderId: eventData.transactionId,
-    orderProducts: eventData.transactionProducts
+    orderProducts: eventData.transactionProducts,
+    taxCode:  window.__profitshare?.taxCode
   })
   createIFrame({
     advertiserCode: window.__profitshare?.advertiserCode,
