@@ -6,6 +6,7 @@ interface Window extends Window {
     key: string
     iframeDomain: string
     cookieScriptDomain: string
+    taxCode: number
     _ps_tgt: TrackingObject
   }
 }

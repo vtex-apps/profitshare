@@ -37,6 +37,7 @@
     var cookieScriptName = "{{settings.cookieScriptName}}";
     var cookieScriptDomain = "{{settings.cookieScriptDomain}}";
     var iframeDomain = "{{settings.iframeDomain}}";
+    var taxCode = "{{settings.taxCode}}"
     
     if (!clickCode || !advertiserCode || !key || !cookieScriptName) {
       console.error('Warning: Missing required field for Profitshare. Please configure it in the apps admin.');
@@ -52,6 +53,7 @@
       key: key,
       cookieScriptDomain: cookieScriptDomain,
       iframeDomain: iframeDomain,
+      taxCode: taxCode,
       _ps_tg: {}
     };
   })()

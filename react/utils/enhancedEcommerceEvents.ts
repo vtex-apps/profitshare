@@ -57,15 +57,15 @@ function sendProductTrackingInfo(e: PixelMessage) {
 async function sendConversionCode(e: PixelMessage){
   const eventData = e.data as OrderPlacedData
   const encryptedParams = await encryptParams({
-    key: window.__profitshare.key,
+    key: window.__profitshare?.key,
     orderId: eventData.transactionId,
     orderProducts: eventData.transactionProducts
   })
   createIFrame({
-    advertiserCode: window.__profitshare.advertiserCode,
-    clickCode: window.__profitshare.clickCode,
+    advertiserCode: window.__profitshare?.advertiserCode,
+    clickCode: window.__profitshare?.clickCode,
     encryptedParams,
-    iframedomain: window.__profitshare.iframeDomain
+    iframedomain: window.__profitshare?.iframeDomain
   })
 }
 

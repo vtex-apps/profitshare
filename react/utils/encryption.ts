@@ -52,7 +52,6 @@ async function getIpData(){
   return res.data.ip;
 }
 
-
 export async function encryptParams(params: Params) {
     var productsList:any ={};
     productsList['external_reference'] = params.orderId;
@@ -62,16 +61,23 @@ export async function encryptParams(params: Params) {
     for(let i=0; i<params.orderProducts.length; i++){
       productsList['product_code['+i.toString()+']'] = params.orderProducts[i].id;
       productsList['product_part_no['+i.toString()+']'] = params.orderProducts[i].sku;
-      productsList['product_price['+i.toString()+']'] = params.orderProducts[i].price;
       productsList['product_name['+i.toString()+']'] = params.orderProducts[i].name;
-      productsList['product_link['+i.toString()+']'] = window.location.origin + params.orderProducts[i].slug + '/p'
+      productsList['product_link['+i.toString()+']'] = window.location.origin + '/' + params.orderProducts[i].slug + '/p'
       productsList['product_category['+i.toString()+']'] = params.orderProducts[i].categoryId;
       productsList['product_category_name['+i.toString()+']'] = params.orderProducts[i].category;
       productsList['product_brand_code['+i.toString()+']'] = params.orderProducts[i].brandId;
       productsList['product_brand['+i.toString()+']'] = params.orderProducts[i].brand;
       productsList['product_qty['+i.toString()+']'] = params.orderProducts[i].quantity;
+      
+      if(window.__profitshare.taxCode){
+        let taxCode = window.__profitshare?.taxCode
+        let withoutVAT = Math.ceil((params.orderProducts[i].sellingPrice * (1-taxCode/100))*100)/100
+        params.orderProducts[i].sellingPrice = withoutVAT;
+      } else {
+        window.__profitshare.taxCode = 0;
+      }
+      productsList['product_price['+i.toString()+']'] = params.orderProducts[i].sellingPrice;
     }
-
     const querystring =  new URLSearchParams(productsList);
     let res = await encrypt(querystring.toString(), params.key);
 
