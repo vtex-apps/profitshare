@@ -10,4 +10,4 @@ Run the following command:
 vtex install vtex.profitshare@0.x
 ```
 
-Next, open the app settings on your admin and fill the form with Cookie conversions, Advertiser tracking code, Encription key.
+Next, open the app settings on your admin and fill the form with Cookie conversions, Advertiser tracking code, Encription key and VAT (if the VAT tax is *not* added in /admin in Promotions -> Taxes). But pay attention, the VAT completed in /admin settings will be applied to all products!
