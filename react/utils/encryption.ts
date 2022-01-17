@@ -71,11 +71,9 @@ export async function encryptParams(params: Params) {
       productsList['product_qty['+i.toString()+']'] = params.orderProducts[i].quantity;
       if(window.__profitshare?.taxCode){
         let taxCode = window.__profitshare?.taxCode
-        let withoutVAT = Math.ceil((params.orderProducts[i].sellingPrice * (1-taxCode/100))*100)/100
+        let withoutVAT = Math.ceil((params.orderProducts[i].sellingPrice /(1+taxCode/100))*100)/100
         params.orderProducts[i].sellingPrice = withoutVAT;
-      } else {
-        window.__profitshare.taxCode = 0;
-      }
+      } 
       productsList['product_price['+i.toString()+']'] = params.orderProducts[i].sellingPrice;
     }
     const querystring =  new URLSearchParams(productsList);
