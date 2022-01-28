@@ -1,81 +1,86 @@
+import axios from "axios";
 import { ProductOrder } from "../typings/events";
 
-
+var CryptoJS = require('crypto-js')
 interface Params {
     key: string
     orderId: string
     orderProducts: ProductOrder[]
+    taxCode: number
 }
 
-function bin2hex (s: string) {
-    var i
-    var l
-    var o = ''
-    var n
+function profitshareBin2hex(s: any){  
+  var i, f = 0, a = [];  
+  s += '';  
+  f = s.length;  
+    
+  for (i = 0; i<f; i++) {  
+      a[i] = s.charCodeAt(i).toString(16).replace(/^([\da-f])$/,"0$1");  
+  }  
+    
+  return a.join('');  
+}  
+
+function getEncryption(plaintext: any, key: any): string {
+  let iv = CryptoJS.enc.Utf8.parse(Math.round((Math.pow(36, 16 + 1) - Math.random() * Math.pow(36, 16))).toString(36).slice(1));
+
+  let subKey = CryptoJS.enc.Utf8.parse(key.substring(0, 16));
+  key = CryptoJS.enc.Utf8.parse(key);
+
+  let chiperData = CryptoJS.AES.encrypt(plaintext, subKey, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+  });
+
+  let hash = CryptoJS.HmacSHA256(chiperData.ciphertext, key);
+  let hmac = atob(hash.toString(CryptoJS.enc.Base64));
+
+  iv = atob(iv.toString(CryptoJS.enc.Base64));    
+  let chiperRaw = atob(chiperData.toString());
+
+  let data = profitshareBin2hex(btoa(iv + hmac + chiperRaw)); 
   
-    s += ''
-  
-    for (i = 0, l = s.length; i < l; i++) {
-      n = s.charCodeAt(i)
-        .toString(16)
-      o += n.length < 2 ? '0' + n : n
-    }
-  
-    return o
+  return data
 }
-  
-function ab2str(buf: ArrayBuffer) {
-    return String.fromCharCode.apply(null, new Uint16Array(buf));
-}
-
-function buildQuery(data: any) {
-  // If the data is already a string, return it as-is
-  if (typeof (data) === 'string') return data;
-
-  // Create a query array to hold the key/value pairs
-  var query = [];
-
-  // Loop through the data object
-  for (var key in data) {
-    if (data.hasOwnProperty(key)) {
-
-      // Encode each key and value, concatenate them into a string, and push them to the array
-      query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-    }
-  }
-
-  // Join each item in the array with a `&` and return the resulting string
-  return query.join('&');
-};
 
 async function encrypt(text: string, password: string) {
-    const encoded = new TextEncoder().encode(text)
-    const pwUtf8 = new TextEncoder().encode(password)
-    const pwHash = await window.crypto.subtle.digest('SHA-256', pwUtf8) 
-    const alg = { name: 'HMAC', hash: "SHA-256"}
-    const key = await window.crypto.subtle.importKey('raw', pwHash, alg, false, ['sign'])
-    const signature = await window.crypto.subtle.sign({ name: "HMAC" }, key, encoded)
+    let res = getEncryption(text, password);
+    return res;
+}
 
-    return bin2hex(ab2str(signature))
-  }
-
+async function getIpData(){
+  const res = await axios.get('https://api.ipify.org/?format=json');
+  return res.data.ip;
+}
 
 export async function encryptParams(params: Params) {
-    const products = [{
-      external_reference: params.orderId,
-      product_code: params.orderProducts.map((product: ProductOrder) => product.id),
-      product_part_no: params.orderProducts.map((product: ProductOrder) => product.sku),
-      product_price: params.orderProducts.map((product: ProductOrder) => product.price),
-      product_name: params.orderProducts.map((product: ProductOrder) => product.name),
-      product_link: params.orderProducts.map((product: ProductOrder) => window.location.origin + product.slug + '/p'),
-      product_category: params.orderProducts.map((product: ProductOrder) => product.categoryId),
-      product_category_name: params.orderProducts.map((product: ProductOrder) => product.category),
-      product_brand_code: params.orderProducts.map((product: ProductOrder) => product.brandId),
-      product_brand: params.orderProducts.map((product: ProductOrder) => product.brand),
-      product_qty: params.orderProducts.map((product: ProductOrder) => product.quantity),
-    }];
-  
-    const querystring = buildQuery(products);
-    return await encrypt(querystring, params.key);
+    var productsList:any ={};
+    productsList['external_reference'] = params.orderId;
+    productsList['user_agent'] = navigator.userAgent;
+    productsList['user_ip'] =  await getIpData();
+
+    for(let i=0; i<params.orderProducts.length; i++){
+      productsList['product_code['+i.toString()+']'] = params.orderProducts[i].id;
+      productsList['product_part_no['+i.toString()+']'] = params.orderProducts[i].sku;
+      productsList['product_name['+i.toString()+']'] = params.orderProducts[i].name;
+      productsList['product_link['+i.toString()+']'] = window.location.origin + '/' + params.orderProducts[i].slug + '/p'
+      productsList['product_category['+i.toString()+']'] = params.orderProducts[i].categoryId;
+      productsList['product_category_name['+i.toString()+']'] = params.orderProducts[i].category;
+      productsList['product_brand_code['+i.toString()+']'] = params.orderProducts[i].brandId;
+      productsList['product_brand['+i.toString()+']'] = params.orderProducts[i].brand;
+      productsList['product_qty['+i.toString()+']'] = params.orderProducts[i].quantity;
+      if(window.__profitshare?.taxCode){
+        let taxCode = window.__profitshare?.taxCode
+        let withoutVAT = Math.ceil((params.orderProducts[i].sellingPrice /(1+taxCode/100))*100)/100
+        params.orderProducts[i].sellingPrice = withoutVAT;
+      } 
+      productsList['product_price['+i.toString()+']'] = params.orderProducts[i].sellingPrice;
+    }
+    const querystring =  new URLSearchParams(productsList);
+    let res = await encrypt(querystring.toString(), params.key);
+
+    return res;
   }
+
+
 

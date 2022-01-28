@@ -1,7 +1,7 @@
 {
   "name": "profitshare",
   "vendor": "vtex",
-  "version": "0.3.0",
+  "version": "0.3.16",
   "title": "profitshare",
   "description": "profitshare",
   "billingOptions": {
@@ -53,6 +53,11 @@
         "title": "IFrame domain",
         "description": "Enter IFrame domain",
         "type": "string"
+      },
+      "taxCode": {
+        "title": "VAT percent",
+        "description": "Enter VAT",
+        "type": "number"
       }
     }
   },
