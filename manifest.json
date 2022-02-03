@@ -23,6 +23,7 @@
   "settingsSchema": {
     "title": "profitshare",
     "type": "object",
+    "bindingBounded": true,
     "properties": {
       "cookieScriptName": {
         "title": "Cookie conversions script name",
