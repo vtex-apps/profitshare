@@ -15,7 +15,7 @@
       if (!cookieScriptDomain || !iframeDomain) {
         console.warn('Warning: Missing cookieScriptDomain or iframeDomain. Default values for Romania will be applied.');
       }
-  
+      
       window.__profitshare = {
         clickCode: clickCode,
         advertiserCode: advertiserCode,
@@ -51,7 +51,7 @@
 <script>
   (function() {
     var domain = "{{ settings.cookieScriptDomain }}" || "t.profitshare.ro";
-    var src = `https://${domain}/files_shared/tr/{{settings.cookieScriptName}}.js`
+    var src = `//${domain}/files_shared/tr/{{settings.cookieScriptName}}.js`
     var s;
         s = document.createElement('script');
         s.type="text/javascript";

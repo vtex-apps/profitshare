@@ -22,7 +22,7 @@ function createIFrame(params: iframeParams) {
     iframe.marginHeight = '0'
     iframe.marginWidth = '0'
     let iframedomain = params.iframedomain  || "c.profitshare.ro";
-    iframe.src = `https://${iframedomain}/ca/0/${params.advertiserCode}/p/${params.encryptedParams}?click_code=${clickCookie}`
+    iframe.src = `//${iframedomain}/ca/0/${params.advertiserCode}/p/${params.encryptedParams}?click_code=${clickCookie}`
     document.body.appendChild(iframe)
 }
 
