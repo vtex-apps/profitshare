@@ -33,7 +33,6 @@ function sendProductTrackingInfo(e: PixelMessage) {
         brandId,
         items
     } = (e.data as ProductViewData).product
-
     let price_window = 0
     let productId_window = productId ? productId : '0'
     let categoryId_window = categoryId ? categoryId : '0'
@@ -50,6 +49,17 @@ function sendProductTrackingInfo(e: PixelMessage) {
       pp: price_window,
       cc: categoryId_window,
       bc: brandId_window
+    }
+    window.localStorage.setItem('_ps_tgt', JSON.stringify(_ps_tgt_));
+}
+
+function sendCategoryTrackingInfo(e: PixelMessage) {
+  const {
+    category,
+  } = (e.data as SearchPageInfoData)
+  let categoryId_window = category?.id ? category?.id : '0'
+    var _ps_tgt_ = {
+      cc: categoryId_window,
     }
     window.localStorage.setItem('_ps_tgt', JSON.stringify(_ps_tgt_));
 }
@@ -87,7 +97,7 @@ export async function sendEnhancedEcommerceEvents(e: PixelMessage) {
         const eventData = e.data as SearchPageInfoData
         const { eventType } = eventData
         if(eventType === 'categoryView'){
-          sendProductTrackingInfo(e);
+          sendCategoryTrackingInfo(e);
           break;
         }
       }
