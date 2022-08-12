@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### [Unreleased]
 
+## [0.5.3] - 2022-08-12
+
 - fix for cookies script to be visible
 ## [0.5.2] - 2022-08-08
 - tracking function for category page
